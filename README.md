@@ -1,6 +1,6 @@
 # LocalStack Demo
 
-Este projeto demonstra o uso do LocalStack para simular serviços AWS localmente, incluindo S3, SQS, SNS, API Gateway e Lambda.
+Este projeto demonstra o uso do LocalStack para simular serviços AWS localmente, incluindo S3, SQS, SNS, API Gateway, Lambda e DynamoDB.
 
 ## Pré-requisitos
 
@@ -32,8 +32,10 @@ go get github.com/aws/aws-sdk-go-v2/service/sqs
 go get github.com/aws/aws-sdk-go-v2/service/sns
 go get github.com/aws/aws-sdk-go-v2/service/apigateway
 go get github.com/aws/aws-sdk-go-v2/service/lambda
+go get github.com/aws/aws-sdk-go-v2/service/dynamodb
 go get github.com/aws/aws-lambda-go/lambda
 go get github.com/gin-gonic/gin
+go get github.com/google/uuid
 ```
 
 4. Inicie o LocalStack:
@@ -152,6 +154,45 @@ curl http://localhost:6000/lambda/list
 curl -X POST http://localhost:6000/lambda/invoke/minha-funcao
 ```
 
+### DynamoDB (CRUD de Usuários)
+
+1. Criar usuário:
+```bash
+curl -X POST http://localhost:6000/users \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "João Silva",
+    "email": "joao@exemplo.com",
+    "employee_number": "12345"
+  }'
+```
+
+2. Listar usuários:
+```bash
+curl http://localhost:6000/users
+```
+
+3. Buscar usuário por ID:
+```bash
+curl http://localhost:6000/users/{id}
+```
+
+4. Atualizar usuário:
+```bash
+curl -X PUT http://localhost:6000/users/{id} \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "João Silva Atualizado",
+    "email": "joao.novo@exemplo.com",
+    "employee_number": "12345"
+  }'
+```
+
+5. Deletar usuário:
+```bash
+curl -X DELETE http://localhost:6000/users/{id}
+```
+
 ## Fluxo Completo de Exemplo
 
 1. Criar função Lambda:
@@ -188,7 +229,8 @@ curl http://localhost:4566/restapis/{api-id}/test/stages/test/test
 │   ├── sqs_controller.go
 │   ├── sns_controller.go
 │   ├── apigateway_controller.go
-│   └── lambda_controller.go
+│   ├── lambda_controller.go
+│   └── dynamodb_controller.go
 ├── lambda/
 │   └── main.go
 ├── routes/

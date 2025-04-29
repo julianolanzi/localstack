@@ -49,4 +49,15 @@ func SetupRoutes(r *gin.Engine, cfg aws.Config) {
 		lambda.GET("/list", lambdaController.ListFunctions)
 		lambda.POST("/invoke/:name", lambdaController.InvokeFunction)
 	}
+
+	// Grupo de rotas DynamoDB
+	dynamoController := controllers.NewDynamoDBController(cfg)
+	dynamo := r.Group("/users")
+	{
+		dynamo.POST("", dynamoController.CreateUser)
+		dynamo.GET("", dynamoController.ListUsers)
+		dynamo.GET("/:id", dynamoController.GetUser)
+		dynamo.PUT("/:id", dynamoController.UpdateUser)
+		dynamo.DELETE("/:id", dynamoController.DeleteUser)
+	}
 }
